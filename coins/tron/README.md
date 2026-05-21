@@ -1,4 +1,5 @@
 # tron-sdk
+
 Tron SDK is used to interact with the Tron blockchain, it contains various functions that can be used for web3 wallet.
 
 ## Installation
@@ -12,37 +13,90 @@ go get -u github.com/okx/go-wallet-sdk/coins/tron
 ```
 
 ## Usage
-### New address
+
+### New Address
+
 ```golang
-pubKeyHex := "0357bbb2d4a9cb8a2357633f201b9c518c2795ded682b7913c6beef3fe23bd6d2f"
-publicKey, _ := hex.DecodeString(pubKeyHex)
-pub,_:=btcec.ParsePubKey(publicKey)
-addr:=GetAddress(pub)
-fmt.Println(addr)
+    publicKey := "0350b3a55428393c092908fa6cdbfdfe0a10645f5940f94380358afb649d0a18fa"
+    address, err := tron.GetAddressByPublicKey(publicKey)
+    if err != nil {
+        // todo
+        fmt.Println(err)
+    }
+    fmt.Println(address)
 ```
 
+### Validate Address
 
-###  Transfer 
 ```golang
-currentTime := time.Now()
-k1 := make([]byte, 8)
-binary.BigEndian.PutUint64(k1, 47102802)
-k2, _ := hex.DecodeString("0000000002cebb52bb1c53a37236902bac251e302a4541452b6df63f594562b9")
-d2, _ := newTransfer(
-    "TSAaoJuxBUxSqU7JGxzTH3gx237PTJxfwV",
-    "TWYrgz7RDP2NpumQRPY1jBmPKLWVSnrzWZ",
-    10000000,
-    hex.EncodeToString(k1[6:8]),
-    hex.EncodeToString(k2[8:16]),
-    currentTime.UnixMilli()+3600*1000,
-    currentTime.UnixMilli())
-
+    ok := tron.ValidateAddress("TQhLxrmHdV1VdeqP8LXD9A1FuiWeYkbMgD")
+    fmt.Println(ok)
 ```
 
-## Credits  This project includes code adapted from the following sources:
-- [gotron-sdk](https://github.com/fbsobreira/gotron-sdk) - Tron Go SDK
+### TRX Transfer
 
-If you are the original author and would like credit adjusted, please contact us.
+```golang
+    prvKey := "8185ae198672f631cf1d2c9447404353ff4597eff0603134d73918594f7424b4"
+    param := &tron.TxParamTron{
+        FromAddress:   "TBfuSMyuVWQpfLQaGM7KpzTDHiHaLqrNCo",
+        ToAddress:     "TVxeeiqU1KbQK84vA9qyhdSpDsf7K4m51X",
+        Amount:        big.NewInt(100000),
+        RefBlockBytes: "d08f",
+        RefBlockHash:  "05dddb27424fd260",
+        Expiration:    1545116409000,
+        Timestamp:     1545112908947,
+    }
+    signedTx, err := tron.SignTransfer(prvKey, param)
+    if err != nil {
+        // todo
+    }
+    fmt.Println(signedTx)
+```
 
-## License
-Most packages or folder are [MIT](<https://github.com/okx/go-wallet-sdk/blob/main/coins/tron/LICENSE>) licensed, see package or folder for the respective license.
+### TRC-20 Transfer
+
+```golang
+    prvKey := "..."
+    param := &tron.TxParamTron{
+        FromAddress:     "TBfuSMyuVWQpfLQaGM7KpzTDHiHaLqrNCo",
+        ToAddress:       "TVxeeiqU1KbQK84vA9qyhdSpDsf7K4m51X",
+        Amount:          big.NewInt(1000000), // smallest unit
+        ContractAddress: "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t",
+        FeeLimit:        100000000,
+        RefBlockBytes:   "d08f",
+        RefBlockHash:    "05dddb27424fd260",
+        Expiration:      1545116409000,
+        Timestamp:       1545112908947,
+    }
+    signedTx, err := tron.SignTokenTransfer(prvKey, param)
+    if err != nil {
+        // todo
+    }
+    fmt.Println(signedTx)
+```
+
+### Sign Message
+
+```golang
+    prvKey := "..."
+    sig, err := tron.SignMessage("hello world", prvKey)
+    if err != nil {
+        // todo
+    }
+    fmt.Println(sig)
+```
+
+### Verify Message
+
+```golang
+    err := tron.VerifyMessage("hello world", publicKey, signature)
+    if err != nil {
+        // bad signature
+    }
+```
+
+## Notes
+
+- The SDK is offline-only. `RefBlockBytes`, `RefBlockHash`, `Expiration`,
+  `Timestamp` and `FeeLimit` must be supplied by the caller using values from
+  a Tron node it intends to broadcast against.
