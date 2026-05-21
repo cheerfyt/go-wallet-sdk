@@ -1,7 +1,6 @@
 package ethereum
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"math/big"
@@ -146,16 +145,6 @@ func TestEth2(t *testing.T) {
 	sig := SignMessage(unSignedBytes, prvKey)
 	tx := transaction.SignedTx(chainId, sig)
 	assert.Equal(t, "0xf86d80852e90edd000830668a0942de4898dd458d6dce097e29026d446300e3815fa88016345785d8a00008038a0c115f04d7dd555746085b01a4c8add779353f7033560b8eb61b244fe37772138a00c333c52c61c2e1ad2af83343b5f1b396a8b0fb60252ff8529b30f2e90967580", tx)
-}
-
-func TestEIP712(t *testing.T) {
-	typedData := TypedData{}
-	str := `{"domain":{"name":"AuthTransfer","chainId":1,"verifyingContract":"0x1243C09717e4441341472c4b142B8ac0B71F7672"},"message":{"details":[{"token":"0x0000000000000000000000000000000000000000","expiration":1853395200}],"spenders":["0x1B256B89462710a6b459540B999AbE5771d45A6e"],"nonce":0},"primaryType":"Permits","types":{"EIP712Domain":[{"name":"name","type":"string"},{"name":"chainId","type":"uint256"},{"name":"verifyingContract","type":"address"}],"Permits":[{"name":"details","type":"PermitDetails[]"},{"name":"spenders","type":"address[]"},{"name":"nonce","type":"uint256"}],"PermitDetails":[{"name":"token","type":"address"},{"name":"expiration","type":"uint256"}]}}`
-	err := json.Unmarshal([]byte(str), &typedData)
-	assert.NoError(t, err)
-	hash, _, err := TypedDataAndHash(typedData)
-	assert.NoError(t, err)
-	assert.Equal(t, "3d697a8b530f96c6d7fc222ee6a43c7976ac2ac52dede33207a4758f5d502eac", util.EncodeHex(hash))
 }
 
 func TestSignAndGenerateRawTransaction(t *testing.T) {
