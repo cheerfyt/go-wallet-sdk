@@ -3,10 +3,9 @@ package v2
 import (
 	"errors"
 	"fmt"
-	"github.com/okx/go-wallet-sdk/coins/aptos/v2/bcs"
-	"net/http"
-	"net/url"
 	"time"
+
+	"github.com/okx/go-wallet-sdk/coins/aptos/v2/bcs"
 )
 
 // For Content-Type header when POST-ing a Transaction
@@ -18,37 +17,11 @@ const ContentTypeAptosSignedTxnBcs = "application/x.aptos.signed_transaction+bcs
 const ContentTypeAptosViewFunctionBcs = "application/x.aptos.view_function+bcs"
 
 type NodeClient struct {
-	client  *http.Client
-	baseUrl *url.URL
 	chainId uint8
 }
 
 func NewNodeClient(rpcUrl string, chainId uint8) (*NodeClient, error) {
-	// Set cookie jar so cookie stickiness applies to connections
-	// TODO Add appropriate suffix list
-	//jar, err := cookiejar.New(nil)
-	//if err != nil {
-	//	return nil, err
-	//}
-	//defaultClient := &http.Client{
-	//	Jar:     jar,
-	//	Timeout: 60 * time.Second,
-	//}
-
-	//return NewNodeClientWithHttpClient(rpcUrl, chainId, defaultClient)
-	return NewNodeClientWithHttpClient(rpcUrl, chainId, nil)
-}
-
-func NewNodeClientWithHttpClient(rpcUrl string, chainId uint8, client *http.Client) (*NodeClient, error) {
-	// baseUrl, err := url.Parse(rpcUrl)
-	//if err != nil {
-	//	return nil, fmt.Errorf("failed to parse RPC url '%s': %w", rpcUrl, err)
-	//}
-	return &NodeClient{
-		//client:  client,
-		//baseUrl: baseUrl,
-		chainId: chainId,
-	}, nil
+	return &NodeClient{chainId: chainId}, nil
 }
 
 /*func (rc *NodeClient) Info() (info NodeInfo, err error) {
