@@ -3,13 +3,15 @@ package tron
 import "math/big"
 
 type Transaction struct {
-	Nonce    *big.Int `json:"nonce"`
-	GasLimit *big.Int `json:"gasLimit"`
-	GasPrice *big.Int `json:"gasPrice"`
-	To       string   `json:"to"`
-	Value    float64  `json:"value"`
-	Data     []byte   `json:"data"`
-	Fee      *big.Int `json:"fee"`
+	Nonce        *big.Int `json:"nonce"`
+	GasLimit     *big.Int `json:"gasLimit"`
+	GasPrice     *big.Int `json:"gasPrice"`
+	From         string   `json:"from"`
+	To           string   `json:"to"`
+	Value        *big.Int `json:"value"`
+	Data         []byte   `json:"data"`
+	Fee          *big.Int `json:"fee"`
+	PermissionId string   `json:"permission_id"`
 }
 
 type TronTransaction struct {

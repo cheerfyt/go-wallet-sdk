@@ -52,7 +52,7 @@ type MultiRequest struct {
 }
 
 func (s *MultiRequest) Check() error {
-	if s == nil || len(s.Messages) > 4 || s.ValidUntil < 0 {
+	if s == nil || len(s.Messages) > 255 || s.ValidUntil < 0 {
 		return ErrInvalidMultiRequest
 	}
 	if mainNet != s.Network {
